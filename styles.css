@@ -1,0 +1,9 @@
+.section {
+    background-image: url(images/cloud.jpg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.form-container {
+    background-color: #5ecd42;
+}
