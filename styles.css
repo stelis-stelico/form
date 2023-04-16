@@ -1,9 +1,43 @@
 .section {
-    background-image: url(images/cloud.jpg);
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #9b59b6;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0;
 }
 .form-container {
-    background-color: #5ecd42;
+    background-color: #fff;
+}
+.formdiv small {
+    visibility: hidden;
+}
+.formdiv.success input {
+    border-color: #2ecc71;
+    border-width: medium;
+}
+.formdiv.error input {
+    border-width: medium;
+    border-color: #e74c3c;
+}
+.formdiv.success textarea {
+    border-color: #2ecc71;
+    border-width: medium;
+}
+.formdiv.error textarea {
+    border-width: medium;
+    border-color: #e74c3c;
+}
+.formdiv.success select {
+    border-color: #2ecc71;
+    border-width: medium;
+}
+.formdiv.error select {
+    border-width: medium;
+    border-color: #e74c3c;
+}
+
+.formdiv.error small {
+    visibility: visible;
+    color: #e74c3c;
 }
