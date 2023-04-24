@@ -14,7 +14,34 @@ const comment = document.getElementById('comment');
 form.addEventListener('submit', function(event) {
     event.preventDefault(); // prevent the form from submitting normally
 
-    checkInputs();
+    const isFormValid = checkInputs();
+
+    if (isFormValid) {
+// Get form field values
+const name = document.querySelector('#fullname').value;
+const email = document.querySelector('#email').value;
+const gender = document.querySelector('input[name="gender"]:checked').value;
+const certificate = document.querySelector('#certificate').value;
+const skills = Array.from(document.querySelectorAll('input[name="skill"]:checked')).map(input => input.value);
+const comment = document.querySelector('#comment').value;
+
+// Create an object with the form field values
+const formData = {
+  name,
+  email,
+  gender,
+  certificate,
+  skills,
+  comment
+};
+
+// Store the form data as a JSON string in local storage
+localStorage.setItem('formData', JSON.stringify(formData));
+
+
+        window.location.href = 'display.html';
+    }
+ 
 });
 
 function checkInputs() {
@@ -22,7 +49,6 @@ function checkInputs() {
     const emailValue = email.value.trim();
     const fullnameValue = fullname.value.trim();
     const commentValue = comment.value.trim();
-    let genderValue = '';
     var certificateValue = certificate.options[certificate.selectedIndex].value;
     let checkedSkills = 0;
 
@@ -36,11 +62,14 @@ function checkInputs() {
 
     // Get the checked radio button for gender
     for (let i = 0; i < gender.length; i++) {
-      if (gender[i].checked) {
-        genderValue = gender[i].value;
-        break;
+        if (gender[i].checked) {
+          genderValue = gender[i].value;
+          setSuccessFor(gender[i]);
+          break;
+        } else {
+          setErrorFor(gender[i], 'Please select your gender');
+        }
       }
-    }
 
 
     // Regular expression for email validation
@@ -75,12 +104,6 @@ function checkInputs() {
         setSuccessFor(comment);
     }
 
-    if (genderValue === '') {
-        setErrorFor(male, 'Please select your gender');
-      } else {
-        setSuccessFor(male);
-      }
-
       if (certificateValue == "") {
         setErrorFor(certificate, 'Please select your highest qualification');
     } else {
@@ -92,8 +115,16 @@ function checkInputs() {
     } else {
         setSuccessFor(skill[0]);
     }
+
+   // check if all inputs have the success class
+   const inputs = [fullname, email, gender[0], certificate, skill[0], comment];
+   const isValid = inputs.every(input => input.parentElement.classList.contains('success'));
+
+   return isValid;
+
     
 }
+
 
 
 // creating functions for error & success
