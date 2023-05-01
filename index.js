@@ -11,82 +11,87 @@ const skill2 = document.getElementById('skill2');
 const skill3 = document.getElementById('skill3');
 const comment = document.getElementById('comment');
 
-form.addEventListener('submit', function(event) {
+window.addEventListener('load', function(event) {
     event.preventDefault(); // prevent the form from submitting normally
-
-    const isFormValid = checkInputs();
-
-    if (isFormValid) {
-// Get form field values
-const name = document.querySelector('#fullname').value;
-const email = document.querySelector('#email').value;
-const gender = document.querySelector('input[name="gender"]:checked').value;
-const certificate = document.querySelector('#certificate').value;
-const skills = Array.from(document.querySelectorAll('input[name="skill"]:checked')).map(input => input.value);
-const comment = document.querySelector('#comment').value;
-
-// Create an object with the form field values
-const formData = {
-  name,
-  email,
-  gender,
-  certificate,
-  skills,
-  comment
-};
-
-// Store the form data as a JSON string in local storage
-localStorage.setItem('formData', JSON.stringify(formData));
-
-
+  
+    // Add event listeners for input validation
+    fullname.addEventListener('blur', checkFullName);
+    email.addEventListener('blur', checkEmail);
+    male.addEventListener('blur', checkGender);
+    female.addEventListener('blur', checkGender);
+    certificate.addEventListener('blur', checkCertificate);
+    skill1.addEventListener('blur', checkSkills);
+    skill2.addEventListener('blur', checkSkills);
+    skill3.addEventListener('blur', checkSkills);
+    comment.addEventListener('blur', checkComment);
+  
+    // Add event listener for form submission
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // prevent the form from submitting normally
+  
+      const isFormValid = checkInputs();
+  
+      if (isFormValid) {
+        // Get form field values
+        const name = document.querySelector('#fullname').value;
+        const email = document.querySelector('#email').value;
+        const gender = document.querySelector('input[name="gender"]:checked').value;
+        const certificate = document.querySelector('#certificate').value;
+        const skills = Array.from(document.querySelectorAll('input[name="skill"]:checked')).map(input => input.value);
+        const comment = document.querySelector('#comment').value;
+  
+        // Create an object with the form field values
+        const formData = {
+          name,
+          email,
+          gender,
+          certificate,
+          skills,
+          comment
+        };
+  
+        // Store the form data as a JSON string in local storage
+        localStorage.setItem('formData', JSON.stringify(formData));
+  
         window.location.href = 'display.html';
-    }
- 
-});
+      }
+    });
+  });
 
 function checkInputs() {
-    // get input values
-    const emailValue = email.value.trim();
+
+      // Check if each input is valid
+  checkFullName();
+  checkEmail();
+  checkGender();
+  checkCertificate();
+  checkSkills();
+  checkComment();
+
+  // Check if all inputs have the success class
+  const inputs = [fullname, email, male, female, skill1, skill2, skill3, certificate, comment];
+  const isValid = inputs.every(input => input.parentElement.classList.contains('success'));
+
+  return isValid;
+}
+
+
+    function checkFullName() {
     const fullnameValue = fullname.value.trim();
-    const commentValue = comment.value.trim();
-    var certificateValue = certificate.options[certificate.selectedIndex].value;
-    let checkedSkills = 0;
-
-    // get checked boxes for skills
-    for (let i = 0; i < skill.length; i++) {
-        if (skill[i].checked) {
-            checkedSkills++;
-        }
-    }
-    
-
-    // Get the checked radio button for gender
-    for (let i = 0; i < gender.length; i++) {
-        if (gender[i].checked) {
-          genderValue = gender[i].value;
-          setSuccessFor(gender[i]);
-          break;
-        } else {
-          setErrorFor(gender[i], 'Please select your gender');
-        }
-      }
-
-
-    // Regular expression for email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // Regular expression for fullname validation
     const fullnameRegex = /^([a-zA-Z]{3,}\s[a-zA-Z]{3,})$/;
 
     if(fullnameValue === ''){
-        // show error & add error class
         setErrorFor(fullname, 'Name cant be blank');
     } else if (!fullnameRegex.test(fullnameValue)) {
-        setErrorFor(fullname, 'Invalid name format');
+        setErrorFor(fullname, 'Invalid name format. Should contain 2 names with at least 3 letters and a space to separate them');
     } else {
-        // add success class
         setSuccessFor(fullname);
-    }  
+    }
+}
+
+function checkEmail() {
+    const emailValue = email.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if(emailValue === ''){
         setErrorFor(email, 'Email cant be blank');
@@ -95,6 +100,48 @@ function checkInputs() {
     } else {
         setSuccessFor(email);
     }
+}
+
+function checkGender() {
+    const genderValue = document.querySelector('input[name="gender"]:checked');
+
+    if (!genderValue) {
+        setErrorFor(male, 'Please select your gender');
+        setErrorFor(female, 'Please select your gender');
+    } else {
+        setSuccessFor(male);
+        setSuccessFor(female);
+    }
+}
+
+function checkCertificate() {
+    const certificateValue = certificate.options[certificate.selectedIndex].value;
+
+    if (certificateValue == "") {
+        setErrorFor(certificate, 'Please select your highest qualification');
+    } else {
+        setSuccessFor(certificate);
+    }
+}
+
+function checkSkills() {
+    let checkedSkills = 0;
+
+    for (let i = 0; i < skill.length; i++) {
+        if (skill[i].checked) {
+            checkedSkills++;
+        }
+    }
+
+    if (checkedSkills < 2) {
+        setErrorFor(skill[0], "Please select at least 2 skills");
+    } else {
+        setSuccessFor(skill[0]);
+    }
+}
+
+function checkComment() {
+    const commentValue = comment.value.trim();
 
     if(commentValue === ''){
         setErrorFor(comment, 'Comment cant be blank');
@@ -103,27 +150,9 @@ function checkInputs() {
     } else {
         setSuccessFor(comment);
     }
-
-      if (certificateValue == "") {
-        setErrorFor(certificate, 'Please select your highest qualification');
-    } else {
-      setSuccessFor(certificate);
-    }
-
-    if (checkedSkills < 2) {
-        setErrorFor(skill[0], "Please select at least 2 skills");
-    } else {
-        setSuccessFor(skill[0]);
-    }
-
-   // check if all inputs have the success class
-   const inputs = [fullname, email, gender[0], certificate, skill[0], comment];
-   const isValid = inputs.every(input => input.parentElement.classList.contains('success'));
-
-   return isValid;
-
-    
 }
+
+
 
 
 
