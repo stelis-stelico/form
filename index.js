@@ -79,12 +79,17 @@ function checkInputs() {
     function checkFullName() {
     const fullnameValue = fullname.value.trim();
     const fullnameRegex = /^([a-zA-Z]{3,}\s[a-zA-Z]{3,})$/;
+    const fullnameRegex2 = /^[A-Za-z]+( [A-Za-z]+)+$/;
+
 
     if(fullnameValue === ''){
         setErrorFor(fullname, 'Name cant be blank');
-    } else if (!fullnameRegex.test(fullnameValue)) {
+    } else if (!fullnameRegex.test(fullnameValue) & !fullnameRegex2.test(fullnameValue)) {
         setErrorFor(fullname, 'Invalid name format. Should contain 2 names with at least 3 letters and a space to separate them');
-    } else {
+    } else if (!fullnameRegex.test(fullnameValue) & fullnameRegex2.test(fullnameValue)){
+        setErrorFor(fullname, 'both names should have a minimum of 3 letters')
+    }
+    else {
         setSuccessFor(fullname);
     }
 }
