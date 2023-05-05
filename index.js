@@ -1,6 +1,7 @@
 const form = document.getElementById('form');
 const fullname = document.getElementById('fullname');
 const email = document.getElementById('email');
+const number = document.getElementById('number')
 const male = document.getElementById('male');
 const female = document.getElementById('female');
 const gender = document.getElementsByName('gender')
@@ -17,6 +18,7 @@ window.addEventListener('load', function(event) {
     // Add event listeners for input validation
     fullname.addEventListener('blur', checkFullName);
     email.addEventListener('blur', checkEmail);
+    number.addEventListener('blur', checkNumber);
     male.addEventListener('blur', checkGender);
     female.addEventListener('blur', checkGender);
     certificate.addEventListener('blur', checkCertificate);
@@ -35,6 +37,7 @@ window.addEventListener('load', function(event) {
         // Get form field values
         const name = document.querySelector('#fullname').value;
         const email = document.querySelector('#email').value;
+        const number = document.querySelector('#number').value;
         const gender = document.querySelector('input[name="gender"]:checked').value;
         const certificate = document.querySelector('#certificate').value;
         const skills = Array.from(document.querySelectorAll('input[name="skill"]:checked')).map(input => input.value);
@@ -44,6 +47,7 @@ window.addEventListener('load', function(event) {
         const formData = {
           name,
           email,
+          number,
           gender,
           certificate,
           skills,
@@ -63,13 +67,14 @@ function checkInputs() {
       // Check if each input is valid
   checkFullName();
   checkEmail();
+  checkNumber();
   checkGender();
   checkCertificate();
   checkSkills();
   checkComment();
 
   // Check if all inputs have the success class
-  const inputs = [fullname, email, male, female, skill1, skill2, skill3, certificate, comment];
+  const inputs = [fullname, email, number, male, female, skill1, skill2, skill3, certificate, comment];
   const isValid = inputs.every(input => input.parentElement.classList.contains('success'));
 
   return isValid;
@@ -104,6 +109,19 @@ function checkEmail() {
         setErrorFor(email, 'Invalid email format');
     } else {
         setSuccessFor(email);
+    }
+}
+
+function checkNumber() {
+    const numberValue = number.value.trim();
+    const numberRegex = /^\d{4}[ -]?\d{3}[ -]?\d{4}$/;
+
+    if(numberValue === ''){
+        setErrorFor(number, 'Phone No cant be blank');
+    } else if (!numberRegex.test(numberValue)) {
+        setErrorFor(number, 'Phone No should be 11 digits');
+    } else {
+        setSuccessFor(number);
     }
 }
 
